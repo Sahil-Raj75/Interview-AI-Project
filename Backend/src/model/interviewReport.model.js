@@ -62,7 +62,7 @@ const skillGapsSchema = new mongoose.Schema({
     _id:true
 })
 
-const preperationPlanSchema = new mongoose.Schema({
+const preparationPlanSchema = new mongoose.Schema({
     day:{
         type:Number,
         required:[true,"Day is required"]
@@ -101,9 +101,15 @@ const interviewReportSchema = new mongoose.Schema({
     technicalQuestions:[technicalQuestionsSchema],
     behaviouralQuestions : [behaviouralQuestionsSchema],
     skillGaps : [skillGapsSchema],
-    preperationPlan : [preperationPlanSchema]
+    preparationPlan : [preparationPlanSchema],
+    user:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"users"
+    }
 },{
     timestamps:true
 })
 
-module.exports = interviewReportSchema;
+const interviewReportModel = mongoose.model("InterviewDataReport" , interviewReportSchema)
+
+module.exports = interviewReportModel;

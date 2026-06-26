@@ -141,7 +141,7 @@ ${jobDescription}
 `;
 
         const response = await ai.models.generateContent({
-                model:'gemini-2.5-flash',
+                model:'gemini-3.5-flash',
                 contents: prompt,
                 config: {
                         responseMimeType:"application/json",
@@ -151,8 +151,8 @@ ${jobDescription}
 
         // Parse the JSON string, then validate shape with Zod
         const report = interviewReportSchema.parse(JSON.parse(response.text));
-
-        console.log(report);
+        
+        return report;
 }
 
 
