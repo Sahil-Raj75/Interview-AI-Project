@@ -31,7 +31,7 @@ const technicalQuestionsSchema = new mongoose.Schema({
     _id: false
 })
 
-const behaviouralQuestionsSchema = new mongoose.Schema({
+const behavioralQuestionsSchema = new mongoose.Schema({
     question:{
         type: String,
         required:[true,"Tech Question is required"],
@@ -72,7 +72,7 @@ const preparationPlanSchema = new mongoose.Schema({
         required:[true,"Focus is required"]
     },
     tasks:{
-        type:String,
+        type:[String],
         required:[true,"Tasks is required"]
     }
 },{
@@ -99,7 +99,7 @@ const interviewReportSchema = new mongoose.Schema({
         max:100
     },
     technicalQuestions:[technicalQuestionsSchema],
-    behaviouralQuestions : [behaviouralQuestionsSchema],
+    behavioralQuestions : [behavioralQuestionsSchema],
     skillGaps : [skillGapsSchema],
     preparationPlan : [preparationPlanSchema],
     user:{
@@ -107,7 +107,9 @@ const interviewReportSchema = new mongoose.Schema({
         ref:"users"
     }
 },{
-    timestamps:true
+    timestamps:true,
+    toJSON:{ virtuals:true },
+    toObject:{ virtuals:true }
 })
 
 const interviewReportModel = mongoose.model("InterviewDataReport" , interviewReportSchema)

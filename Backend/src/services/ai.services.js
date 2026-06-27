@@ -1,6 +1,6 @@
 const { GoogleGenAI, GenerateImagesResponse } = require('@google/genai')
 const { z } = require('zod')
-
+const { zodToJsonSchema } = require("zod-to-json-schema")
 
 const ai = new GoogleGenAI({
         apiKey: process.env.GOOGLE_GENAI_API_KEY
@@ -128,30 +128,30 @@ const interviewReportJsonSchema = {
 const interviewReportSchema = z.fromJSONSchema(interviewReportJsonSchema);
 
 async function generateInterviewReport({ resume, selfDescription, jobDescription }) {
-        const prompt = `Generate a comprehensive interview report for a candidate with the following details:
- 
-Resume:
-${resume}
- 
-Self Description:
-${selfDescription}
- 
-Job Description:
-${jobDescription}
-`;
+        const prompt = `"You are a FAANG interview coach. Generate a DETAILED report.
 
+CRITICAL: Do NOT return empty arrays.
+
+GENERATE EXACTLY:
+1. technicalQuestions (EXACTLY 5): ...
+2. behavioralQuestions (EXACTLY 3): ...
+3. skillGaps (AT LEAST 2): ...
+4. preparationPlan (AT LEAST 5 DAYS): ...
+
+NO EMPTY ARRAYS!"
+`;
         const response = await ai.models.generateContent({
-                model:'gemini-3.5-flash',
+                model: 'gemini-3.5-flash',
                 contents: prompt,
                 config: {
-                        responseMimeType:"application/json",
+                        responseMimeType: "application/json",
                         responseSchema: interviewReportJsonSchema
                 },
         });
 
         // Parse the JSON string, then validate shape with Zod
         const report = interviewReportSchema.parse(JSON.parse(response.text));
-        
+
         return report;
 }
 

@@ -16,13 +16,19 @@ const generateReport = async (req, res) => {
             jobDescription,
         });
 
-        const report = await interviewReportModel.create({
+        const reportPayload = {
             user: req.user.id,
             resume: resumeContent.text,
             selfDescription,
             jobDescription,
-            ...reportByAi
-        })
+            ...reportByAi,
+        };
+
+        if (!reportPayload.behavioralQuestions && reportPayload.behaviouralQuestions) {
+            reportPayload.behavioralQuestions = reportPayload.behaviouralQuestions;
+        }
+
+        const report = await interviewReportModel.create(reportPayload)
 
         return res.status(201).json({
             message: "Report Created successfully",
