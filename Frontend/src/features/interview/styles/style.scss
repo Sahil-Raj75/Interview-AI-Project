@@ -1,0 +1,70 @@
+.home {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .interview-group-data {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        width: 600px;
+        height: 500px;
+    }
+
+    textarea {
+        outline: none;
+        height: 100%;
+        width: 100%;
+        border: none;
+        padding-inline: 1rem;
+        padding-block: 0.7rem;
+        border-radius: 0.9rem;
+
+        background-color: whitesmoke;
+        color: black;
+        resize: none;
+    }
+
+    .input-group:has(textarea){
+        height: 100%;
+    }
+    button{
+        margin: 5px 0px;
+        background-color: rgb(214, 26, 70);
+        color: white;
+        padding: 11px 82px;
+    }
+
+    .left {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-self: stretch;
+        width: 50%;
+    }
+
+    .file-label{
+            display: flex;
+            text-align: center;
+            justify-content: center;
+            padding: 0.75rem;
+            background-color: rgb(220, 215, 215);
+            color: rgb(30, 30, 30);
+            border-radius: 0.5rem;
+            cursor: pointer;
+    }
+
+    .right{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-self: stretch;
+        width: 50%;
+        // gap: 0.5rem;
+    }
+    
+}

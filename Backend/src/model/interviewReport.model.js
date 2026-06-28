@@ -59,7 +59,7 @@ const skillGapsSchema = new mongoose.Schema({
         required:[true,"Severity is required"]
     }
 },{
-    _id:true
+    _id:false
 })
 
 const preparationPlanSchema = new mongoose.Schema({
