@@ -10,11 +10,8 @@ export const useAuth = () => {
         setloading(true);
         try {
             const data = await login({ email, password })
-
-            
             setuser(data.user)
         } catch (error) {
-
         }
         finally {
             setloading(false)
