@@ -20,7 +20,7 @@ export const router = createBrowserRouter([
         element: <Protected><Home /></Protected>
     },
     {
-        path: '/generatereport',
+        path: '/interview',
         element: <Protected><Report /></Protected>
     }
 ])

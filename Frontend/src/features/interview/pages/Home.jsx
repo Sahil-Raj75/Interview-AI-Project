@@ -7,7 +7,7 @@ const Home = () => {
             <section className='report-generator-shell'>
                 <aside className='side-nav'>
                     <nav>
-                        <button className='nav-item active'>Dashboard</button>
+                        <button className='nav-item'>Dashboard</button>
                         <button className='nav-item'>Job Matcher</button>
                         <button className='nav-item'>Reports</button>
                         <button className='nav-item'>Saved Profiles</button>
