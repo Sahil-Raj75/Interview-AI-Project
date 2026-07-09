@@ -16,7 +16,6 @@ export const useAuth = () => {
         finally {
             setloading(false)
         }
-
     }
 
     const handleregister = async ({ username, email, password }) => {
