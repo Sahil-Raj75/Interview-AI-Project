@@ -12,6 +12,7 @@ export const useAuth = () => {
             const data = await login({ email, password })
             setuser(data.user)
         } catch (error) {
+            throw new Error("Faild to login");
         }
         finally {
             setloading(false)
@@ -24,7 +25,7 @@ export const useAuth = () => {
             const data = await register({ username, email, password })
             setuser(data.user)
         } catch (error) {
-
+            throw new Error("Faild to register");
         }
         finally {
             setloading(false)
@@ -37,7 +38,7 @@ export const useAuth = () => {
             const data = await logout()
             setuser(null)
         } catch (error) {
-
+            throw new Error("Faild to logout");
         } finally {
             setloading(false)
         }

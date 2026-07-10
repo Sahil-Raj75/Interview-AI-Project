@@ -1,7 +1,30 @@
 import React from 'react'
+import { useState, useRef } from 'react'
 import '../styles/style.scss'
+import { useInterview } from '../hooks/useInterview'
+import { useNavigate } from 'react-router'
 
 const Home = () => {
+    const navigate = useNavigate();
+    const { loading, report, generateReport } = useInterview();
+    const [jobDescription, setjobDescription] = useState("");
+    const [selfDescription, setselfDescription] = useState("");
+    const resumeInputRef = useRef();
+
+    const handleGenerateReport = async () => {
+        const resumeFile = resumeInputRef.current.files[ 0 ];
+        await generateReport(resumeFile, jobDescription, selfDescription)
+        navigate(`/interview/${report._id}`)
+    }
+
+    if (loading) {
+        return (
+            <main >
+                <h1>Interview report loading....</h1>
+            </main>
+        )
+    }
+
     return (
         <main className='home'>
             <section className='report-generator-shell'>
@@ -29,6 +52,7 @@ const Home = () => {
                                 <span>JOB DESCRIPTION</span>
                             </div>
                             <textarea
+                                onChange={(e) => { setjobDescription(e.target.value) }}
                                 name='jobDescription'
                                 id='jobDescription'
                                 placeholder='Paste the full job description here, including responsibilities, technical requirements, and soft skills...'
@@ -47,18 +71,19 @@ const Home = () => {
                                         <label className='browse-button' htmlFor='resume'>Browse Files</label>
                                     </div>
                                 </div>
-                                <input type='file' name='resume' id='resume' accept='.pdf,.doc,.docx' />
+                                <input ref={resumeInputRef} type='file' name='resume' id='resume' accept='.pdf,.doc,.docx' />
                             </div>
 
                             <div className='panel-group'>
                                 <label htmlFor='selfDescription' className='panel-label'>SELF DESCRIPTION</label>
                                 <textarea
+                                    onChange={(e) => { setselfDescription(e.target.value) }}
                                     name='selfDescription'
                                     id='selfDescription'
                                     placeholder="Add notes about the candidate's personality, interview performance, or specific cultural fit observations..."
                                     rows={6}
                                 />
-                            <button className='button'>Generate the report</button>
+                                <button onClick={handleGenerateReport} className='button'>Generate the report</button>
                             </div>
 
                             <p className='hint'>*AI-driven analysis typically takes 10-15 seconds.</p>
