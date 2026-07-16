@@ -9,11 +9,20 @@ const Home = () => {
     const { loading, report, generateReport } = useInterview();
     const [jobDescription, setjobDescription] = useState("");
     const [selfDescription, setselfDescription] = useState("");
-    const resumeInputRef = useRef();
+    const [resumeFile, setResumeFile] = useState(null)
+    // const resumeInputRef = useRef(null);
 
     const handleGenerateReport = async () => {
-        const resumeFile = resumeInputRef.current.files[ 0 ];
-        await generateReport(resumeFile, jobDescription, selfDescription)
+        console.log(resumeFile);
+        console.log(resumeFile.current);
+
+        if (!resumeFile) {
+            alert("Please choose a file");
+            return;
+        }
+        // const resumeFile = ResumeFile.current.files[0];
+        const response = await generateReport({resumeFile, jobDescription, selfDescription})
+        console.log(response.data);
         navigate(`/interview/${report._id}`)
     }
 
@@ -71,7 +80,14 @@ const Home = () => {
                                         <label className='browse-button' htmlFor='resume'>Browse Files</label>
                                     </div>
                                 </div>
-                                <input ref={resumeInputRef} type='file' name='resume' id='resume' accept='.pdf,.doc,.docx' />
+                                <input
+                                    type="file"
+                                    id="resume"
+                                    accept=".pdf,.doc,.docx"
+                                    onChange={(e) => {
+                                        setResumeFile(e.target.files[0]);
+                                    }}
+                                />
                             </div>
 
                             <div className='panel-group'>
