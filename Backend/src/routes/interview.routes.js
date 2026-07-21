@@ -16,7 +16,7 @@ interviewRouter.post('/generate', authMiddleware.authUser , upload.single("resum
  * @description get a interview report by id 
  * @access Private
  */
-interviewRouter.get('/report/:id', authMiddleware.authUser  , interviewController.getReportById)
+interviewRouter.get('/report/:interviewId', authMiddleware.authUser  , interviewController.getReportById)
 
 /**
  * @route Get /api/interview/reports
