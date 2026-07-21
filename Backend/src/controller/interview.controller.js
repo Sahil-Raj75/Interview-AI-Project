@@ -7,7 +7,7 @@ const userModel = require('../model/user.model')
  * @description Generate an interview report based on user data
  */
 const generateReport = async (req, res) => {
-
+    // just using pdfParse(req.file.buffer)
     const resumeContent = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
 
     const { selfDescription, jobDescription } = req.body
@@ -52,14 +52,14 @@ const getAllReports = async (req, res) => {
     const userId = req.user.id;
 
     try {
-        const reports = await interviewReportModel.find({user: userId}).sort({createdAt: -1}).select('-resume - jobDescription -selfDescription -__v -skillGaps -preparationPlan -tecnicalQuestions -behavioralQuestions');
-        
+        const reports = await interviewReportModel.find({ user: userId }).sort({ createdAt: -1 }).select('-resume -jobDescription -selfDescription -__v -skillGaps -preparationPlan -technicalQuestions -behavioralQuestions');
+
         return res.status(200).json({
             message: "Reports fetched successfully",
             reports
         })
     }
-    catch(error) {
+    catch (error) {
         return res.status(500).json({ error: error.message });
     }
 }
