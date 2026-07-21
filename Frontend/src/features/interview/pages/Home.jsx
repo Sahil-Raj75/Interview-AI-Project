@@ -13,16 +13,12 @@ const Home = () => {
     // const resumeInputRef = useRef(null);
 
     const handleGenerateReport = async () => {
-        console.log(resumeFile);
-        console.log(resumeFile.current);
-
         if (!resumeFile) {
             alert("Please choose a file");
             return;
         }
         // const resumeFile = ResumeFile.current.files[0];
         const response = await generateReport({resumeFile, jobDescription, selfDescription})
-        console.log(response.data);
         navigate(`/interview/${report._id}`)
     }
 
