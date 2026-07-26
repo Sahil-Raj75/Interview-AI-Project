@@ -1,4 +1,5 @@
-﻿import { useMemo, useState } from 'react'
+﻿import { useMemo, useState, useEffect } from 'react'
+import { useParams } from 'react-router'
 import '../styles/report.scss'
 import { useInterview } from '../hooks/useInterview'
 
@@ -10,13 +11,27 @@ const sections = [
 ]
 
 const Report = () => {
-  const {report} = useInterview();
+  const { interviewId } = useParams()
+  const { report, loading, getReportById } = useInterview()
+  
+  useEffect(() => {
+    if (interviewId) {
+      getReportById(interviewId)
+    }
+  }, [interviewId])
 
-  const [activeSection, setActiveSection] = useState('technical')
+  const [activeSection, setActiveSection] = useState('behaviour')
 
   const sectionContent = useMemo(() => {
+    
+    
+    if (loading || !report) {
+      return <div className="report-loading">Loading report...</div>
+    }
+
     if (activeSection === 'behaviour') {
-      return report.behavioralQuestions.map((item, index) => (
+      return report.behavioralQuestions?.map((item, index) => (
+
         <article className='content-card' key={`behaviour-${index}`}>
           <div className='content-card-top'>
             <span className='question-badge'>B{index + 1}</span>
@@ -30,7 +45,7 @@ const Report = () => {
     }
 
     if (activeSection === 'technical') {
-      return report.technicalQuestions.map((item, index) => (
+      return report.technicalQuestions?.map((item, index) => (
         <article className='content-card' key={`technical-${index}`}>
           <div className='content-card-top'>
             <span className='question-badge'>Q{index + 1}</span>
@@ -46,14 +61,14 @@ const Report = () => {
     if (activeSection === 'roadmap') {
       return (
         <div className='roadmap-main'>
-          {report.preparationPlan.map((item) => (
+          {report.preparationPlan?.map((item) => (
             <article className='roadmap-card' key={`plan-${item.day}`}>
               <div className='roadmap-card-top'>
                 <span className='roadmap-day-label'>Day {item.day}</span>
               </div>
               <h3 className='roadmap-card-title'>{item.focus}</h3>
               <ul className='roadmap-tasks'>
-                {item.tasks.map((task, taskIndex) => (
+                {item.tasks?.map((task, taskIndex) => (
                   <li key={`task-${item.day}-${taskIndex}`}>{task}</li>
                 ))}
               </ul>
@@ -64,25 +79,38 @@ const Report = () => {
     }
 
     return null
-  }, [activeSection])
+  }, [activeSection,report])
 
   const sectionSummary = useMemo(() => {
+    if (!report) return ''
+
     if (activeSection === 'behaviour') {
-      return `${report.behavioralQuestions.length} behaviour questions with story-driven insights.`
+      return `${report.behavioralQuestions?.length ?? 0} behaviour questions with story-driven insights.`
     }
 
     if (activeSection === 'technical') {
-      return `${report.technicalQuestions.length} technical questions reviewing system design, algorithms, and performance.`
+      return `${report.technicalQuestions?.length ?? 0} technical questions reviewing system design, algorithms, and performance.`
     }
 
     return 'A concise 5-day preparation plan with focused study tasks and mock interview practice.'
-  }, [activeSection])
+  }, [activeSection, report])
 
   const sectionCount = useMemo(() => {
-    if (activeSection === 'behaviour') return report.behavioralQuestions.length
-    if (activeSection === 'technical') return report.technicalQuestions.length
-    return report.preparationPlan.length
-  }, [activeSection])
+    if (!report) return 0
+    if (activeSection === 'behaviour') return report.behavioralQuestions?.length ?? 0
+    if (activeSection === 'technical') return report.technicalQuestions?.length ?? 0
+    return report.preparationPlan?.length ?? 0
+  }, [activeSection, report])
+
+  if (loading || !report) {
+    return (
+      <main className='report-page'>
+        <div className='report-board'>
+          <div className='report-loading'>Loading report...</div>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <main className='report-page'>

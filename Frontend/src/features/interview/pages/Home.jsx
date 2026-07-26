@@ -17,9 +17,14 @@ const Home = () => {
             alert("Please choose a file");
             return;
         }
-        // const resumeFile = ResumeFile.current.files[0];
+
         const response = await generateReport({resumeFile, jobDescription, selfDescription})
-        navigate(`/interview/${report._id}`)
+        const reportId = response?._id
+        if (reportId) {
+          navigate(`/interview/${reportId}`)
+        } else {
+          console.error('Could not read report ID from response', response)
+        }
     }
 
     if (loading) {
