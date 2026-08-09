@@ -13,8 +13,10 @@ export const generateInterviewReport = async ({ resumeFile, selfDescription, job
     formData.append("selfDescription", selfDescription)
     formData.append("jobDescription", jobDescription)
 
-    const response = await api.post('/api/interview/generate', formData)
-    return response;
+    const response = await api.post('/api/interview/generate', formData) // backend return the { "message": "Report Created successfully","data": {...}}
+    return response; // so the Axios response puts the actual report at response.data.data;
+    // normalize service to return the report directly 
+    // so we can also use : { return response.data.data } here after this — return the inner payload directly
 }
 
 export const getAllInterviewReports = async () => {

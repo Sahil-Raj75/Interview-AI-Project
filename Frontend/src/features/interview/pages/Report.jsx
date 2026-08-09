@@ -23,8 +23,6 @@ const Report = () => {
   const [activeSection, setActiveSection] = useState('behaviour')
 
   const sectionContent = useMemo(() => {
-    
-    
     if (loading || !report) {
       return <div className="report-loading">Loading report...</div>
     }
