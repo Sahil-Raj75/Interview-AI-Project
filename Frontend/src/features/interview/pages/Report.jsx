@@ -12,8 +12,8 @@ const sections = [
 
 const Report = () => {
   const { interviewId } = useParams()
-  const { report, loading, getReportById } = useInterview()
-  
+  const { report, loading, getReportById, getResumePdf } = useInterview()
+
   useEffect(() => {
     if (interviewId) {
       getReportById(interviewId)
@@ -77,7 +77,7 @@ const Report = () => {
     }
 
     return null
-  }, [activeSection,report])
+  }, [activeSection, report])
 
   const sectionSummary = useMemo(() => {
     if (!report) return ''
@@ -152,6 +152,12 @@ const Report = () => {
         </section>
 
         <aside className='report-panel'>
+          <div className="download-resume">
+            <button
+              onClick={() => getResumePdf(interviewId)}
+              type='button' className=' button btn'>Download Resume
+            </button>
+          </div>
           <div className='panel-block'>
             <span className='panel-label'>Match score</span>
             <div className='score-ring'>
