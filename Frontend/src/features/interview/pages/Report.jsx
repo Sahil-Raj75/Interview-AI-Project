@@ -2,6 +2,7 @@
 import { useParams } from 'react-router'
 import '../styles/report.scss'
 import { useInterview } from '../hooks/useInterview'
+import { handleFollowUpQuestion } from '../services/interview.api'
 
 
 const sections = [
@@ -9,6 +10,103 @@ const sections = [
   { id: 'technical', label: 'Technical Questions' },
   { id: 'roadmap', label: 'Roadmap' }
 ]
+
+const MockInterviewChat = ({ interviewId, question, questionType }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [answer, setAnswer] = useState('')
+  const [isThinking, setIsThinking] = useState(false)
+  const [messages, setMessages] = useState(question.conversation ?? [])
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    const trimmedAnswer = answer.trim()
+
+    if (!trimmedAnswer || isThinking) return
+
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      { sender: 'user', text: trimmedAnswer }
+    ])
+    setAnswer('')
+    setIsThinking(true)
+
+    try {
+      const response = await handleFollowUpQuestion(
+        interviewId,
+        questionType,
+        question._id,
+        trimmedAnswer
+      )
+      setMessages(response.conversation ?? [])
+    } catch (error) {
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        { sender: 'ai', text: 'I could not review that answer. Please try again.' }
+      ])
+      console.error('Unable to generate follow-up:', error)
+    } finally {
+      setIsThinking(false)
+    }
+  }
+
+  return (
+    <div className={`mock-chat ${isOpen ? 'is-open' : ''}`}>
+      <button
+        type='button'
+        className='mock-chat-toggle'
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((open) => !open)}
+      >
+        <span>{isOpen ? 'Close practice' : 'Practice answer'}</span>
+        <span className='mock-chat-toggle-icon' aria-hidden='true'>{isOpen ? '−' : '+'}</span>
+      </button>
+
+      {isOpen && (
+        <div className='mock-chat-container'>
+          <div className='mock-chat-heading'>
+            <div>
+              <span className='mock-chat-eyebrow'>Live practice</span>
+              <h4>Interviewer follow-up</h4>
+            </div>
+            <span className='interviewer-status'>AI interviewer</span>
+          </div>
+
+          <div className='mock-chat-messages' aria-live='polite'>
+            {messages.length === 0 && (
+              <p className='mock-chat-empty'>Answer the question above to begin the discussion.</p>
+            )}
+            {messages.map((message, index) => (
+              <div className={`mock-message ${message.sender === 'user' ? 'user-message' : 'ai-message'}`} key={`${message.sender}-${index}`}>
+                <span className='mock-message-sender'>{message.sender === 'user' ? 'You' : 'AI interviewer'}</span>
+                <p>{message.text}</p>
+              </div>
+            ))}
+            {isThinking && (
+              <div className='mock-message ai-message mock-thinking' aria-label='AI is thinking'>
+                <span className='mock-message-sender'>AI interviewer</span>
+                <span className='typing-dots'><i /><i /><i /></span>
+              </div>
+            )}
+          </div>
+
+          <form className='mock-chat-input-row' onSubmit={handleSubmit}>
+            <input
+              type='text'
+              value={answer}
+              onChange={(event) => setAnswer(event.target.value)}
+              placeholder='Type your answer or explanation...'
+              aria-label='Your answer or explanation'
+              disabled={isThinking}
+            />
+            <button type='submit' className='mock-send-button' aria-label='Send answer' disabled={!answer.trim() || isThinking}>
+              <span aria-hidden='true' style={{ fontSize: '14px' }}>Send</span>
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  )
+}
 
 const Report = () => {
   const { interviewId } = useParams()
@@ -38,6 +136,7 @@ const Report = () => {
           <h3>{item.question}</h3>
           <p className='content-intent'>{item.intention}</p>
           <p className='content-answer'>{item.answer}</p>
+          <MockInterviewChat interviewId={interviewId} question={item} questionType='behavioral' />
         </article>
       ))
     }
@@ -52,6 +151,7 @@ const Report = () => {
           <h3>{item.question}</h3>
           <p className='content-intent'>{item.intention}</p>
           <p className='content-answer'>{item.answer}</p>
+          <MockInterviewChat interviewId={interviewId} question={item} questionType='technical' />
         </article>
       ))
     }

@@ -231,6 +231,212 @@
   line-height: 1.7;
 }
 
+.mock-chat {
+  margin-top: 0.35rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 0.9rem;
+}
+
+.mock-chat-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid rgba(227, 29, 91, 0.32);
+  border-radius: 12px;
+  padding: 0.75rem 0.9rem;
+  background: rgba(227, 29, 91, 0.08);
+  color: #f7c1d0;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.mock-chat-toggle:hover,
+.mock-chat.is-open .mock-chat-toggle {
+  background: rgba(227, 29, 91, 0.16);
+  border-color: rgba(227, 29, 91, 0.55);
+}
+
+.mock-chat-toggle-icon {
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.mock-chat-container {
+  margin-top: 0.75rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  background: #10141b;
+}
+
+.mock-chat-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1rem 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.mock-chat-eyebrow,
+.mock-message-sender {
+  display: block;
+  color: #858d9d;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.mock-chat-heading h4 {
+  margin: 0.25rem 0 0;
+  color: #f5f7fb;
+  font-size: 0.9rem;
+}
+
+.interviewer-status {
+  color: #6fe0ad;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.interviewer-status::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 0.4rem 1px 0;
+  border-radius: 50%;
+  background: #36c982;
+}
+
+.mock-chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.mock-message {
+  max-width: 88%;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.mock-message p {
+  margin: 0.3rem 0 0;
+  color: #dce2ec;
+  font-size: 0.87rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.ai-message {
+  align-self: flex-start;
+  background: #191f29;
+  border-top-left-radius: 4px;
+}
+
+.user-message {
+  align-self: flex-end;
+  background: #42202e;
+  border-color: rgba(227, 29, 91, 0.3);
+  border-top-right-radius: 4px;
+}
+
+.user-message .mock-message-sender {
+  color: #f1a9bd;
+  text-align: right;
+}
+
+.mock-chat-empty {
+  margin: 0;
+  color: #858d9d;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.mock-chat-input-row {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: #141922;
+}
+
+.mock-chat-input-row input {
+  min-width: 0;
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  outline: none;
+  background: #0d1117;
+  color: #f5f7fb;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.mock-chat-input-row input:focus {
+  border-color: rgba(227, 29, 91, 0.7);
+  box-shadow: 0 0 0 3px rgba(227, 29, 91, 0.1);
+}
+
+.mock-chat-input-row input::placeholder { color: #687181; }
+
+.mock-send-button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  border: none;
+  border-radius: 10px;
+  background: #e31d5b;
+  color: #ffffff;
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+
+.mock-send-button:hover:not(:disabled) { background: #f03470; }
+.mock-send-button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.typing-dots {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-top: 0.55rem;
+}
+
+.typing-dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9ba5b5;
+  animation: mock-typing 1.1s infinite ease-in-out;
+}
+
+.typing-dots i:nth-child(2) { animation-delay: 0.15s; }
+.typing-dots i:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes mock-typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
 .plan-tasks {
   margin: 0.8rem 0 0;
   padding-left: 1.3rem;
@@ -459,5 +665,15 @@
 
   .score-ring {
     min-height: 140px;
+  }
+
+  .mock-chat-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .mock-message {
+    max-width: 94%;
   }
 }

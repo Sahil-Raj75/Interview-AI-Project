@@ -33,3 +33,12 @@ export const generateResumePdf = async (id) => {
     const response = await api.post(`/api/interview/resume/pdf/${id}`, null, { responseType: "blob" })
     return response.data;
 }
+
+export const handleFollowUpQuestion = async (interviewId, questionType, questionId, answer) => {
+    const response = await api.post(`/api/interview/report/${interviewId}/follow-up`, {
+        questionType,
+        questionId,
+        answer
+    });
+    return response.data;
+};
