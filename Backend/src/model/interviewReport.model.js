@@ -1,3 +1,4 @@
+const { TurnCoverage } = require('@google/genai')
 const mongoose = require('mongoose')
 
 /**
@@ -14,6 +15,25 @@ const mongoose = require('mongoose')
  * - Skill Gaps
  * - Preperation plan
  */
+
+const messageSchema = new mongoose.Schema({
+    sender:{
+        type : String,
+        enum: ['user', 'ai'],
+        required: true
+    },
+    text:{
+        type:String,
+        required:true
+    },
+    timestamps:{
+        type:Date,
+        default:Date.now
+    }
+},{
+    _id:false
+});
+
 const technicalQuestionsSchema = new mongoose.Schema({
     question:{
         type: String,
@@ -26,9 +46,8 @@ const technicalQuestionsSchema = new mongoose.Schema({
     answer:{
         type:String,
         required:[true,"Answer is required"]
-    }
-},{
-    _id: false
+    },
+    conversation:[messageSchema] //this is store chat history for the particular question
 })
 
 const behavioralQuestionsSchema = new mongoose.Schema({
@@ -43,9 +62,8 @@ const behavioralQuestionsSchema = new mongoose.Schema({
     answer:{
         type:String,
         required:[true,"Answer is required"]
-    }
-},{
-    _id: false
+    },
+    conversation:[messageSchema]
 })
 
 const skillGapsSchema = new mongoose.Schema({

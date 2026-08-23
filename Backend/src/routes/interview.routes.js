@@ -32,4 +32,11 @@ interviewRouter.get('/reports', authMiddleware.authUser, interviewController.get
  */
 interviewRouter.post('/resume/pdf/:interviewId', authMiddleware.authUser, interviewController.generateResumePdfController)
 
+/**
+ * @route Post /api/interview/report/:interviewId/follow-up
+ * @description handle follow up questions for the user
+ * @access Private
+ */
+
+interviewRouter.post('/report/:interviewId/follow-up', authMiddleware.authUser, interviewController.handleFollowUp);
 module.exports = interviewRouter;

@@ -1,6 +1,5 @@
-const { GoogleGenAI, GenerateImagesResponse } = require('@google/genai')
-const { z, object, describe } = require('zod')
-const { zodToJsonSchema } = require("zod-to-json-schema")
+const { GoogleGenAI } = require('@google/genai')
+const { z } = require('zod')
 const puppeteer = require('puppeteer')
 
 const ai = new GoogleGenAI({
@@ -128,8 +127,12 @@ const interviewReportJsonSchema = {
 
 const interviewReportSchema = z.fromJSONSchema(interviewReportJsonSchema);
 
+
 async function generateInterviewReport({ resume, selfDescription, jobDescription }) {
-        const prompt = `"You are a FAANG interview coach. Generate a DETAILED report.
+        const prompt = `"You are a FAANG interview coach. Generate a DETAILED report with the following details:
+                        Resume: ${resume}
+                        Self Description: ${selfDescription}
+                        Job Description: ${jobDescription}
 
 CRITICAL: Do NOT return empty arrays.
 
@@ -172,8 +175,7 @@ async function generatePdfFromHtml(htmlContent) {
 
         await browser.close()
 
-        return pdfBuffer
-
+        return pdfBuffer;
 }
 async function generateResumePdf({ resume, selfDescription, jobDescription }) {
         const resumePdfJSONSchema = {
@@ -190,7 +192,7 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
 
         const resumePdfScheme = z.fromJSONSchema(resumePdfJSONSchema);
 
-                const prompt = `Generate resume for a candidate with the following details:
+        const prompt = `Generate resume for a candidate with the following details:
                         Resume: ${resume}
                         Self Description: ${selfDescription}
                         Job Description: ${jobDescription}
@@ -204,20 +206,53 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
                     `
 
         const response = await ai.models.generateContent({
-                        model: 'gemini-3-flash-preview',
-                        contents: prompt,
-                        config: {
-                                responseMimeType: "application/json",
-                                responseSchema: resumePdfJSONSchema
-                        }
-                })
+                model: 'gemini-3-flash-preview',
+                contents: prompt,
+                config: {
+                        responseMimeType: "application/json",
+                        responseSchema: resumePdfJSONSchema
+                }
+        })
 
         const JsonContent = resumePdfScheme.parse(JSON.parse(response.text));
 
-                const pdfBuffer = generatePdfFromHtml(JsonContent.html)
+        const pdfBuffer = generatePdfFromHtml(JsonContent.html)
 
         return pdfBuffer
-        }
+}
+
+async function generateFollowUpResponse({ resume, jobDescription, question, intention, suggestedAnswer, conversationHistory, userAnswer }) {
+        // Format the previous conversation history into a readable transcript for Gemini
+        const formattedHistory = conversationHistory.map(msg =>
+                `${msg.sender === 'user' ? 'Candidate' : 'Interviewer'}: ${msg.text}`
+        ).join('\n');
+
+        const prompt = `You are a strict, senior technical interviewer conducting a mock interview.
+Job Description: ${jobDescription}
+Candidate Resume Summary: ${resume}
+
+Question being asked: ${question}
+Interviewer Intention: ${intention}
+Suggested Answer Guidelines: ${suggestedAnswer}
+
+Previous Conversation Transcript:
+${formattedHistory}
+
+Candidate's Latest Answer: ${userAnswer}
+
+Instructions:
+1. Analyze the candidate's latest answer against the question's intention and guidelines.
+2. If the answer is superficial, missing depth, or incorrect, act like a real interviewer and ask a sharp, probing follow-up question.
+3. If the answer is comprehensive and strong, acknowledge it briefly and offer a constructive tip to make it even better, or move to a related nuance.
+4. Keep your response conversational, concise (under 3-4 sentences), and professional. Do not output JSON, just output the plain text response.`;
+
+        const response = await ai.models.generateContent({
+                model: 'gemini-3-flash-preview',
+                contents: prompt,
+        });
+
+        return response.text;
+}
 
 
-        module.exports = { generateInterviewReport, generateResumePdf }
+module.exports = { generateInterviewReport, generateResumePdf, generateFollowUpResponse }
