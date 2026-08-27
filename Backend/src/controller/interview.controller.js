@@ -11,13 +11,14 @@ const generateReport = async (req, res) => {
     // just using pdfParse(req.file.buffer)
     const resumeContent = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
 
-    const { selfDescription, jobDescription } = req.body
+    const { selfDescription, jobDescription, companyPrompt } = req.body
 
     try {
         const reportByAi = await generateInterviewReport({
             resume: resumeContent.text,
             selfDescription,
             jobDescription,
+            companyPrompt,
         });
 
         const reportPayload = {
@@ -25,6 +26,7 @@ const generateReport = async (req, res) => {
             resume: resumeContent.text,
             selfDescription,
             jobDescription,
+            companyPrompt,
             ...reportByAi,
         };
 
@@ -95,7 +97,7 @@ const getReportById = async (req, res) => {
 const generateResumePdfController = async (req, res) => {
     const { interviewId } = req.params;
 
-    const interviewReport = await interviewReportModel.findById({ _id: interviewId })
+    const interviewReport = await interviewReportModel.findById(interviewId)
 
     if (!interviewReport) {
         return res.status(404).json({

@@ -1,6 +1,7 @@
 const { GoogleGenAI } = require('@google/genai')
 const { z } = require('zod')
 const puppeteer = require('puppeteer')
+const CompanyEmbedding = require('../model/company.model');
 
 const ai = new GoogleGenAI({
         apiKey: process.env.GOOGLE_GENAI_API_KEY
@@ -127,23 +128,28 @@ const interviewReportJsonSchema = {
 
 const interviewReportSchema = z.fromJSONSchema(interviewReportJsonSchema);
 
+async function generateInterviewReport({ resume, selfDescription, jobDescription, companyPrompt }) {
+        const companyRAGContext = await getCompanyContextViaRAG(companyPrompt);
 
-async function generateInterviewReport({ resume, selfDescription, jobDescription }) {
-        const prompt = `"You are a FAANG interview coach. Generate a DETAILED report with the following details:
-                        Resume: ${resume}
-                        Self Description: ${selfDescription}
-                        Job Description: ${jobDescription}
+        // augmentation - augment the prompt with company context retrieved via RAG if available
+        const prompt = `You are a FAANG interview coach. Generate a DETAILED report with the following details:
+                Resume: ${resume}
+                Self Description: ${selfDescription}
+                Job Description: ${jobDescription}
+                
+                Target Company & Culture Context (Retrieved via RAG / Target Details):
+                ${companyRAGContext ? companyRAGContext : "Target Company Context: Rely on general industry standards and the job description for company alignment."}
 
 CRITICAL: Do NOT return empty arrays.
 
 GENERATE EXACTLY:
 1. technicalQuestions (EXACTLY 5): ...
-2. behavioralQuestions (EXACTLY 3): ...
-3. skillGaps (AT LEAST 2): ...
-4. preparationPlan (AT LEAST 5 DAYS): ...
+2. behavioralQuestions (EXACTLY 5): ...
+3. skillGaps (AT LEAST 4): ...
+4. preparationPlan (AT LEAST 7 DAYS): ...
 
-NO EMPTY ARRAYS!"
-`;
+NO EMPTY ARRAYS!`;
+
         const response = await ai.models.generateContent({
                 model: 'gemini-3-flash-preview',
                 contents: prompt,
@@ -155,7 +161,6 @@ NO EMPTY ARRAYS!"
 
         // Parse the JSON string, then validate shape with Zod
         const report = interviewReportSchema.parse(JSON.parse(response.text));
-
         return report;
 }
 
@@ -253,6 +258,55 @@ Instructions:
 
         return response.text;
 }
+// db is passed from the controller to avoid multiple connections and reuse the existing connection for RAG search
+async function getCompanyContextViaRAG(companyPrompt) {
+        try {
+                if (!companyPrompt || companyPrompt.trim() === "") return "";
 
+                // 1. Generate embedding for the user's company target prompt using Gemini
+                const embeddingResult = await ai.models.embedContent({
+                        model: 'gemini-embedding-001',
+                        contents: companyPrompt,
+                        config:{
+                                outputDimensionality: 512
+                        }
+                });
 
-module.exports = { generateInterviewReport, generateResumePdf, generateFollowUpResponse }
+                const queryEmbedding = embeddingResult.embeddings[0].values;
+
+                // 2. Run MongoDB Atlas $vectorSearch pipeline
+                const pipeline = [
+                        {
+                                $vectorSearch: {
+                                        index: "company_vector_index",
+                                        path: "embedding",
+                                        queryVector: queryEmbedding,
+                                        numCandidates: 10,
+                                        limit: 2
+                                }
+                        },
+                        {
+                                $project: {
+                                        companyName: 1,
+                                        text: 1,
+                                        score: { $meta: "vectorSearchScore" }
+                                }
+                        }
+                ];
+
+                const searchResults = await CompanyEmbedding.aggregate(pipeline);
+
+                // 3. Extract and combine text chunks if relevance score is good
+                if (searchResults && searchResults.length > 0) {
+                        // console.log("RAG Match Found for companies:", searchResults.map(r => r.companyName));
+                        return searchResults.map(r => `Company: ${r.companyName}\nEngineering Context: ${r.text}`).join('\n\n');
+                }
+
+                return ""; // Fallback if no local vector match found
+        } catch (error) {
+                console.error("RAG Vector Search Error:", error);
+                return "";
+        }
+}
+
+module.exports = { generateInterviewReport, generateResumePdf, generateFollowUpResponse, getCompanyContextViaRAG }

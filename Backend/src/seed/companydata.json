@@ -1,0 +1,14 @@
+[
+  {
+    "companyName": "Stripe",
+    "text": "Stripe engineering culture focuses on high reliability, immutability, and API-first design. Their tech stack heavily relies on Ruby, Go, Java, and Scala. They manage massive transaction volumes using distributed systems, strict idempotency keys, event-driven architectures, and rigorous automated testing to handle financial data with zero downtime."
+  },
+  {
+    "companyName": "Zomato",
+    "text": "Zomato operates at massive scale with hyper-local delivery challenges. Their tech stack includes Python, PHP, Go, React, and MySQL/Redis for high-speed caching and geospatial queries. Engineering principles emphasize fault tolerance during peak traffic spikes (like Friday nights or festivals), real-time delivery tracking, and microservices decoupling."
+  },
+  {
+    "companyName": "Netflix",
+    "text": "Netflix is a pioneer in cloud-native microservices architecture hosted entirely on AWS. Their core tech stack includes Java, Node.js, and Python. Key engineering principles include chaos engineering (Chaos Monkey), eventual consistency, high availability, reactive programming, and decentralized ownership where teams manage their own services end-to-end."
+  }
+]

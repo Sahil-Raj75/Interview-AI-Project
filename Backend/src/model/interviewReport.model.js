@@ -1,4 +1,3 @@
-const { TurnCoverage } = require('@google/genai')
 const mongoose = require('mongoose')
 
 /**
@@ -26,7 +25,7 @@ const messageSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    timestamps:{
+    timestamp:{
         type:Date,
         default:Date.now
     }
@@ -106,6 +105,9 @@ const interviewReportSchema = new mongoose.Schema({
         type:String,
     },
     selfDescription:{
+        type:String,
+    },
+    companyPrompt:{
         type:String,
     },
     targerRole:{
