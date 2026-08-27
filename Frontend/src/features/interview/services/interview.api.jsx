@@ -5,13 +5,14 @@ const api = axios.create({
     withCredentials: true
 })
 
-export const generateInterviewReport = async ({ resumeFile, selfDescription, jobDescription }) => {
+export const generateInterviewReport = async ({ resumeFile, selfDescription, jobDescription, companyPrompt }) => {
 
     const formData = new FormData()
 
     formData.append("resume", resumeFile)
     formData.append("selfDescription", selfDescription)
     formData.append("jobDescription", jobDescription)
+    formData.append("companyPrompt", companyPrompt)
 
     const response = await api.post('/api/interview/generate', formData) // backend return the { "message": "Report Created successfully","data": {...}}
     return response; // so the Axios response puts the actual report at response.data.data;
