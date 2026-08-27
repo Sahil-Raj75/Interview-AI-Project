@@ -9,6 +9,7 @@ const Home = () => {
     const [activeView, setActiveView] = useState('dashboard')
     const [jobDescription, setjobDescription] = useState('')
     const [selfDescription, setselfDescription] = useState('')
+    const [companyPrompt, setCompanyPrompt] = useState('')
     const [resumeFile, setResumeFile] = useState(null)
     const viewContent = {
     dashboard: {
@@ -47,7 +48,7 @@ const Home = () => {
             return
         }
 
-        const response = await generateReport({ resumeFile, jobDescription, selfDescription })
+        const response = await generateReport({ resumeFile, jobDescription, selfDescription, companyPrompt })
         const reportId = response?._id
 
         if (reportId) {
@@ -104,6 +105,16 @@ const Home = () => {
                 </div>
 
                 <div className='panel-group'>
+                    <label htmlFor='companyPrompt' className='panel-label'>TARGET COMPANY &amp; CULTURE ALIGNMENT</label>
+                    <textarea
+                        onChange={(e) => { setCompanyPrompt(e.target.value) }}
+                        name='companyPrompt'
+                        id='companyPrompt'
+                        placeholder='e.g., I am targeting Stripe because of their event-driven payment scale...'
+                        rows={5}
+                        value={companyPrompt}
+                    />
+
                     <label htmlFor='selfDescription' className='panel-label'>SELF DESCRIPTION</label>
                     <textarea
                         onChange={(e) => { setselfDescription(e.target.value) }}
