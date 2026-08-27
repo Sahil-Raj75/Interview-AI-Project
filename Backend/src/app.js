@@ -8,9 +8,24 @@ const cors = require('cors')
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin : 'http://localhost:5173',
+    origin: (origin, callback) => {
+        const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
+            .split(',')
+            .map(value => value.trim())
+            .filter(Boolean)
+
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true)
+        }
+
+        return callback(new Error('Origin is not allowed by CORS'))
+    },
     credentials : true
 }))
+
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' })
+})
 
 // use all the api starts with 
 app.use('/api/auth',authRouter)

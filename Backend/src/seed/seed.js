@@ -1,6 +1,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 const companyEmbeddingModel = require('../model/company.model');
 const { GoogleGenAI } = require('@google/genai');
 const connectToDB = require('../config/database');
@@ -19,7 +20,7 @@ async function seedDatabase() {
         console.log("Cleared existing company embeddings.");
 
         // Read company data JSON
-        const dataPath = path.join(__dirname, 'companyData.json');
+        const dataPath = path.join(__dirname, 'companydata.json');
         const jsonData = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
 
         const documentsToInsert = [];

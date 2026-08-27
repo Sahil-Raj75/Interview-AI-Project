@@ -3,6 +3,12 @@ const blacklistModel = require('../model/blacklist.model.js')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+}
+
 /**
  * @name registerUsercontroller
  * @description register a new user
@@ -45,7 +51,7 @@ const registerUsercontroller = async ( req ,res ) => {
         {expiresIn: "1d"}
     )
 
-    res.cookie('token', token)
+    res.cookie('token', token, cookieOptions)
 
      res.status(200).json({
         message: "User register successfull",
@@ -88,7 +94,7 @@ const loginUsercontroller = async (req,res) => {
         {expiresIn:"1d"}
     )
 
-    res.cookie("token",token)
+    res.cookie("token",token, cookieOptions)
 
     return res.status(200).json({
         message:"User login successfully",
@@ -112,7 +118,7 @@ const logoutUsercontroller = async (req, res) => {
         await blacklistModel.create({token})
     }
 
-    res.clearCookie("token")
+    res.clearCookie("token", cookieOptions)
 
     res.status(200).json({
         message : "user logged out successfully"
@@ -125,7 +131,7 @@ const logoutUsercontroller = async (req, res) => {
  * @access private
  */
 const getMeController = async (req ,res)=>{
-    const user = await userModel.findOne(req.user._id)
+    const user = await userModel.findById(req.user.id)
 
     res.status(200).json({
         message:"user fetch succesfully",
