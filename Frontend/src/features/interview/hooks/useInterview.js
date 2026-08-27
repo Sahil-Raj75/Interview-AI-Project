@@ -12,12 +12,12 @@ export const useInterview = () => {
 
     const { loading, setloading, report, setreport, reports, setreports } = context
 
-    const generateReport = async ({ resumeFile, selfDescription, jobDescription }) => {
+    const generateReport = async ({ resumeFile, selfDescription, jobDescription, companyPrompt }) => {
         setloading(true)
         let response = null
         try {
             // generateInterviewReport Mera Khuda api func. hai interview.api me tho Jo Hum return Karwaenge O wahi lake dega response me
-            response = await generateInterviewReport({ resumeFile, selfDescription, jobDescription })
+            response = await generateInterviewReport({ resumeFile, selfDescription, jobDescription, companyPrompt })
             // generateInterviewReport Return the whole response which first comes form the backend then Axios ke baad yaha per aa rha tho response.data.data use krna hoga actual report ke liye.
             const reportData = response?.data?.data  // pehle .data axios ka response payload read kr rha jisme backend ka payload hai data ke andara tho .data use to read the actual report data.
             setreport(reportData)
