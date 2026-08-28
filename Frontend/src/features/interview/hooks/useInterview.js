@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { InterviewContext } from "../interview.context";
-import { generateInterviewReport, getAllInterviewReports, getInterviewReportById, generateResumePdf } from "../services/interview.api"
+import { generateInterviewReport, getAllInterviewReports, getInterviewReportById, generateResumePdf, logoutUser } from "../services/interview.api"
 
 
 export const useInterview = () => {
@@ -78,5 +78,16 @@ export const useInterview = () => {
         }
     }
 
-    return { loading, report, reports, generateReport, getReportById, getAllReports, getResumePdf }
+    const handleLogout = async () => {
+        setloading(true);
+        try {
+            await logoutUser();
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }finally{
+            setloading(false);
+        }
+    }
+
+    return { loading, report, reports, generateReport, getReportById, getAllReports, getResumePdf, handleLogout }
 }

@@ -5,43 +5,50 @@ import { useNavigate } from 'react-router'
 
 const Home = () => {
     const navigate = useNavigate()
-    const { loading, reports, generateReport, getAllReports } = useInterview()
+    const { loading, reports, generateReport, getAllReports, handleLogout } = useInterview()
     const [activeView, setActiveView] = useState('dashboard')
     const [jobDescription, setjobDescription] = useState('')
     const [selfDescription, setselfDescription] = useState('')
     const [companyPrompt, setCompanyPrompt] = useState('')
     const [resumeFile, setResumeFile] = useState(null)
     const viewContent = {
-    dashboard: {
-        title: 'Report Generator',
-        description:
-            'Analyze candidate fit by comparing specific job requirements with professional backgrounds.'
-    },
+        dashboard: {
+            title: 'Report Generator',
+            description:
+                'Analyze candidate fit by comparing specific job requirements with professional backgrounds.'
+        },
 
-    reports: {
-        title: 'My reports',
-        description:
-            'Review the reports you have already generated for your interview preparation.'
-    },
+        reports: {
+            title: 'My reports',
+            description:
+                'Review the reports you have already generated for your interview preparation.'
+        },
 
-    jobMatcher: {
-        title: 'Job Matcher',
-        description:
-            'Find jobs that match your skills and professional background.'
-    },
+        jobMatcher: {
+            title: 'Job Matcher',
+            description:
+                'Find jobs that match your skills and professional background.'
+        },
 
-    savedProfiles: {
-        title: 'Saved Profiles',
-        description:
-            'View and manage your saved candidate profiles.'
-    },
+        savedProfiles: {
+            title: 'Saved Profiles',
+            description:
+                'View and manage your saved candidate profiles.'
+        },
 
-    settings: {
-        title: 'Settings',
-        description:
-            'Manage your application preferences and account settings.'
+        settings: {
+            title: 'Settings',
+            description:
+                'Manage your application preferences and account settings.'
+        }
     }
-}
+
+    const handleUserLogout = () => {
+        // Clear any authentication tokens or user data here
+        
+        handleLogout();
+        navigate('/login') // Redirect to login page after logout
+    }
     const handleGenerateReport = async () => {
         if (!resumeFile) {
             alert('Please choose a file')
@@ -206,6 +213,9 @@ const Home = () => {
                         <div>
                             <h1>{viewContent[activeView].title}</h1>
                             <p>{viewContent[activeView].description}</p>
+                        </div>
+                        <div >
+                        <button type='button' className='button' onClick={handleUserLogout}>Logout</button>
                         </div>
                     </header>
 
