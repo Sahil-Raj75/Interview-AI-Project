@@ -47,8 +47,8 @@ const Login = () => {
           />
           <div className="auth-visual__overlay"></div>
           <div className="auth-visual__text">
-            <h1>Master Your Future</h1>
-            <p>Expert tools to help you land your dream job.</p>
+            <h1>Structure your Future</h1>
+            <p>Sign in to access your PrepFlow account</p>
           </div>
         </section>
 

@@ -44,8 +44,8 @@ const Register = () => {
           <img src="https://images.unsplash.com/photo-1720960292784-04caa31d60fa?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Professional setting for PrepFlow register background" />
           <div className="auth-visual__overlay"></div>
           <div className="auth-visual__text">
-            <h1>Master Your Future</h1>
-            <p>Expert tools to help you land your dream job.</p>
+            <h1>Welcome to PrepFlow</h1>
+            <p>Create your account to get started</p>
           </div>
         </section>
 

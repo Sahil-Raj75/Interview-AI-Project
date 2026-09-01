@@ -97,7 +97,7 @@ $border-subtle: rgba(171, 136, 140, 0.2);
     gap: 120px;
     box-sizing: border-box;
 
-    @media (min-width: 768px) {
+    @media (min-width: 1024px) {
         flex-direction: row;
     }
 }
@@ -109,7 +109,7 @@ $border-subtle: rgba(171, 136, 140, 0.2);
     overflow: hidden;
     border: 1px solid $border-subtle;
 
-    @media (min-width: 768px) {
+    @media (min-width: 1024px) {
         display: flex;
         flex-direction: column;
         width: 50%;
@@ -179,7 +179,7 @@ $border-subtle: rgba(171, 136, 140, 0.2);
         inset 0 1px 0 rgba(255, 255, 255, 0.1),
         inset 0 0 40px rgba(233, 30, 99, 0.05);
 
-    @media (min-width: 640px) {
+    @media (min-width: 1024px) {
         padding: 50px;
     }
 }
@@ -189,8 +189,13 @@ $border-subtle: rgba(171, 136, 140, 0.2);
   max-width: 400px;
   display: flex;
   flex-direction: column;
-  gap: 48px;
-  padding-bottom: 8px;
+  gap: 4px;
+//   padding-top: 15px;
+//   padding-bottom: 8px;
+
+  @media (min-width: 1024px) {
+    max-width: none;
+  }
 }
 
 .auth-footer-text {
@@ -281,24 +286,6 @@ form {
     }
 }
 
-.button.primary-button {
-    width: 100%;
-    background: $brand-berry;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    padding: 12px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-    margin-top: 8px;
-
-    &:hover {
-        opacity: 0.9;
-    }
-}
-
 .auth-footer-text {
     text-align: center;
     margin-top: 8px;
@@ -314,5 +301,25 @@ form {
         &:hover {
             color: #ff4e7c;
         }
+    }
+}
+
+@media (max-width: 768px) {
+    .auth-form-section {
+        padding: 20px !important;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .auth-form-wrapper {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    button.primary-button {
+        padding: 11px 24px !important;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 !important;
     }
 }
