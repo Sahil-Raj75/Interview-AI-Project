@@ -55,7 +55,7 @@ const getAllReports = async (req, res) => {
     const userId = req.user.id;
 
     try {
-        const reports = await interviewReportModel.find({ user: userId }).sort({ createdAt: -1 }).select('-resume -jobDescription -selfDescription -__v -skillGaps -preparationPlan -technicalQuestions -behavioralQuestions');
+        const reports = await interviewReportModel.find({ user: userId }).sort({ createdAt: -1 }).select('-resume -selfDescription -__v -preparationPlan -technicalQuestions -behavioralQuestions');
 
         return res.status(200).json({
             message: "Reports fetched successfully",
@@ -123,10 +123,11 @@ const generateResumePdfController = async (req, res) => {
 const handleFollowUp = async (req, res) => {
     try {
         const { interviewId } = req.params;
-        const { questionId, answer, questionType } = req.body; // questionType: 'technical' or 'behavioral'
+        const { questionId, answer, questionType, questionIndex } = req.body; // questionType: 'technical' or 'behavioral'
         const userId = req.user.id;
 
-        if (!questionId || !answer || !questionType) {
+        const hasQuestionIndex = Number.isInteger(Number(questionIndex)) && Number(questionIndex) >= 0;
+        if ((!questionId && !hasQuestionIndex) || !answer?.trim() || !['technical', 'behavioral'].includes(questionType)) {
             return res.status(400).json({ message: "Question ID, answer, and question type are required." });
         }
 
@@ -138,13 +139,17 @@ const handleFollowUp = async (req, res) => {
 
         // Select the correct questions array based on type
         const questionsList = questionType === 'technical' ? report.technicalQuestions : report.behavioralQuestions;
-        const questionObj = questionsList.id(questionId);
+        const questionObj = questionsList?.find((question, index) =>
+            (questionId && String(question._id) === String(questionId)) ||
+            (Number.isInteger(Number(questionIndex)) && index === Number(questionIndex))
+        );
 
         if (!questionObj) {
             return res.status(404).json({ message: "Question not found in report." });
         }
 
         // Push user message to conversation history
+        questionObj.conversation = questionObj.conversation || [];
         questionObj.conversation.push({
             sender: 'user',
             text: answer
