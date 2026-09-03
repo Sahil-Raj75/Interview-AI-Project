@@ -41,11 +41,12 @@ export const generateResumePdf = async (id) => {
     return response.data;
 }
 
-export const handleFollowUpQuestion = async (interviewId, questionType, questionId, answer) => {
+export const handleFollowUpQuestion = async (interviewId, questionType, questionId, answer, questionIndex) => {
     const response = await api.post(`/api/interview/report/${interviewId}/follow-up`, {
         questionType,
         questionId,
-        answer
+        answer,
+        questionIndex
     });
     return response.data;
 };
