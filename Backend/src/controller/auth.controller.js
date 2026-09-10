@@ -4,9 +4,10 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const cookieOptions = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  httpOnly: true,
+  secure: true,
+  sameSite: 'none',
+  path: '/'
 }
 
 /**
