@@ -3,10 +3,12 @@ const blacklistModel = require('../model/blacklist.model.js')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+const isProduction = process.env.NODE_ENV === 'production'
+
 const cookieOptions = {
   httpOnly: true,
-  secure: true,
-  sameSite: 'none',
+  secure: isProduction,
+  sameSite: isProduction ? 'none' : 'lax',
   path: '/'
 }
 

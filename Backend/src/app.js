@@ -9,9 +9,11 @@ const normalizeOrigins = (value = '') => value
     .split(',')
     .map(origin => origin.trim())
     .filter(Boolean)
+    .map(origin => origin.replace(/\/$/, ''))
 
 const allowedOrigins = new Set([
     ...normalizeOrigins(process.env.FRONTEND_URL),
+    ...normalizeOrigins(process.env.ADDITIONAL_FRONTEND_URLS),
     'http://localhost:5173',
     'http://localhost:3000',
     'https://localhost:5173',
